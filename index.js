@@ -23,7 +23,7 @@ async function init() {
   partialContainer.textContent = "Loading...";
 
   const channel = new MessageChannel();
-  const model = await Vosk.createModel("model.tar.gz");
+  const model = await Vosk.createModel(window.location.href + "model.tar.gz");
   model.registerPort(channel.port1);
 
   const sampleRate = 48000;
