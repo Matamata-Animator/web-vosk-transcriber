@@ -46,14 +46,15 @@ async function init() {
 
   partialContainer.textContent = "Ready";
 
-  // Load an audio file (replace 'path/to/your/audio/file.wav' with the actual path)
-
-  //   const audioFilePath = "audio.wav";
-  //   const audioBuffer = await loadAudioFile(audioFilePath, sampleRate);
-  const audioFileInput = document.getElementById("audioFileInput");
-  const audioFile = audioFileInput.files[0];
-  console.log("AudioFile: ", audioFile);
-  const arrayBuffer = await readAudioFile(audioFile);
+  //   const audioFileInput = document.getElementById("audioFileInput");
+  //   const audioFile = audioFileInput.files[0];
+  //   console.log("AudioFile: ", audioFile);
+  //   const arrayBuffer = await readAudioFile(audioFile);
+  //   console.log(arrayBuffer);
+  const arrayBuffer = await (
+    await fetch("http://localhost:8000/file")
+  ).arrayBuffer();
+  console.log(arrayBuffer);
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
   await audioContext.audioWorklet.addModule("recognizer-processor.js");
@@ -77,17 +78,19 @@ async function init() {
 }
 
 window.onload = () => {
-  const trigger = document.getElementById("trigger");
-  trigger.onmouseup = async () => {
-    trigger.disabled = true;
-    await init();
-  };
+  //   const trigger = document.getElementById("trigger");
+  //   trigger.onmouseup = async () => {
+  //     trigger.disabled = true;
+  //     await init();
+  //   };
 
-  const sendTranscript = document.getElementById("sendTranscript");
-  sendTranscript.onmouseup = async () => {
-    let transcript = document.getElementById("recognition-result");
+  //   const sendTranscript = document.getElementById("sendTranscript");
+  //   sendTranscript.onmouseup = async () => {
+  //     let transcript = document.getElementById("recognition-result");
 
-    console.log(transcript.innerText);
-    fetch(`http://localhost:8000/?text=${transcript.innerText}`);
-  };
+  //     console.log(transcript.innerText);
+  //     fetch(`http://localhost:8000/?text=${transcript.innerText}`);
+  //   };
+
+  init();
 };
