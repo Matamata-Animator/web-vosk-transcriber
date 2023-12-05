@@ -86,11 +86,13 @@ async function init() {
 }
 
 window.onload = () => {
-  //   const trigger = document.getElementById("trigger");
-  //   trigger.onmouseup = async () => {
-  //     trigger.disabled = true;
-  //     init();
-  //   };
+  const trigger = document.getElementById("trigger");
+  trigger.onmouseup = async () => {
+    trigger.disabled = true;
+    if (!started) {
+      init();
+    }
+  };
 
   init();
 };
