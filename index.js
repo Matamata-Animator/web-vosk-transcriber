@@ -76,17 +76,18 @@ async function init() {
   source.start();
 }
 
-async function loadAudioFile(path, sampleRate) {
-  const response = await fetch(path);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioContext = new AudioContext();
-  return await audioContext.decodeAudioData(arrayBuffer);
-}
-
 window.onload = () => {
   const trigger = document.getElementById("trigger");
-  trigger.onmouseup = () => {
+  trigger.onmouseup = async () => {
     trigger.disabled = true;
-    init();
+    await init();
+  };
+
+  const sendTranscript = document.getElementById("sendTranscript");
+  sendTranscript.onmouseup = async () => {
+    let transcript = document.getElementById("recognition-result");
+
+    console.log(transcript.innerText);
+    fetch(`http://localhost:8000/?text=${transcript.innerText}`);
   };
 };
