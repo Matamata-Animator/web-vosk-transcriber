@@ -31,12 +31,17 @@ async function init() {
   const recognizer = new model.KaldiRecognizer(sampleRate);
   recognizer.setWords(true);
 
-  recognizer.on("result", (message) => {
+  recognizer.on("result", async (message) => {
     const result = message.result;
 
     const newSpan = document.createElement("span");
     newSpan.textContent = `${result.text} `;
     resultsContainer.insertBefore(newSpan, partialContainer);
+    console.log("Done");
+    console.log(message);
+
+    await fetch(`http://localhost:8000/?text=${result.text}`);
+    window.close();
   });
   recognizer.on("partialresult", (message) => {
     const partial = message.result.partial;
@@ -78,19 +83,9 @@ async function init() {
 }
 
 window.onload = () => {
-  //   const trigger = document.getElementById("trigger");
-  //   trigger.onmouseup = async () => {
-  //     trigger.disabled = true;
-  //     await init();
-  //   };
-
-  //   const sendTranscript = document.getElementById("sendTranscript");
-  //   sendTranscript.onmouseup = async () => {
-  //     let transcript = document.getElementById("recognition-result");
-
-  //     console.log(transcript.innerText);
-  //     fetch(`http://localhost:8000/?text=${transcript.innerText}`);
-  //   };
-
-  init();
+  const trigger = document.getElementById("trigger");
+  trigger.onmouseup = async () => {
+    trigger.disabled = true;
+    init();
+  };
 };
