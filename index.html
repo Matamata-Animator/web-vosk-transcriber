@@ -2,13 +2,22 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Simplest In-Browser Speech Recognition</title>
+    <title>Matamata Vosk Transcriber</title>
     <script type="application/javascript" src="vosk.js"></script>
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
+    <p>
+      Open devtools to see progress. You may need to reload this page and/or
+      disable your adblocker.
+    </p>
+
+    <p>
+      Note: Using Whisper or LocalAI as a transcriber will be significantly
+      faster. This will take about as long as the audio file is.
+    </p>
     <div id="wrapper">
-      <button id="trigger" type="button">Start Recognition</button>
+      <!-- <button id="trigger" type="button">Start Recognition</button> -->
       <div id="recognition-result"><span id="partial"></span></div>
     </div>
   </body>

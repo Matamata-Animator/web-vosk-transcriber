@@ -14,7 +14,8 @@ function readAudioFile(file) {
     reader.readAsArrayBuffer(file);
   });
 }
-
+let lastUpdated = Date.now();
+let started = false;
 async function init() {
   const audioContext = new AudioContext();
   const resultsContainer = document.getElementById("recognition-result");
@@ -32,6 +33,9 @@ async function init() {
   recognizer.setWords(true);
 
   recognizer.on("result", async (message) => {
+    console.log(message);
+    lastUpdated = Date.now();
+
     const result = message.result;
 
     const newSpan = document.createElement("span");
@@ -39,14 +43,13 @@ async function init() {
     resultsContainer.insertBefore(newSpan, partialContainer);
     console.log("Done");
     console.log(message);
-
-    await fetch(`http://localhost:8000/?text=${result.text}`);
-    window.close();
   });
   recognizer.on("partialresult", (message) => {
     const partial = message.result.partial;
 
     partialContainer.textContent = partial;
+    lastUpdated = Date.now();
+    started = true;
   });
 
   partialContainer.textContent = "Ready";
@@ -57,7 +60,7 @@ async function init() {
   //   const arrayBuffer = await readAudioFile(audioFile);
   //   console.log(arrayBuffer);
   const arrayBuffer = await (
-    await fetch("http://localhost:8000/file")
+    await fetch("http://localhost:8000/audio_file")
   ).arrayBuffer();
   console.log(arrayBuffer);
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
@@ -83,9 +86,24 @@ async function init() {
 }
 
 window.onload = () => {
-  const trigger = document.getElementById("trigger");
-  trigger.onmouseup = async () => {
-    trigger.disabled = true;
-    init();
-  };
+  //   const trigger = document.getElementById("trigger");
+  //   trigger.onmouseup = async () => {
+  //     trigger.disabled = true;
+  //     init();
+  //   };
+
+  init();
 };
+
+async function checkTimer() {
+  if (started && Date.now() - lastUpdated > 500) {
+    result = document.getElementById("recognition-result").innerText;
+    console.log(result);
+    await fetch(`http://localhost:8000/transcriber_result?text=${result}`);
+    window.close();
+  } else {
+    setTimeout(await checkTimer, 500);
+  }
+}
+
+checkTimer();
